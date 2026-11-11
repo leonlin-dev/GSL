@@ -1,0 +1,18 @@
+{
+  "name": "GSL",
+  "version": "2.0.1",
+  "upstream": "https://github.com/microsoft/GSL.git",
+  "upstream_ref": "v2.0.0@1995e86d",
+  "kind": "header-only",
+  "install": {
+    "zw_dir": "GSL/GSL-2.0.1",
+    "copy": [
+      { "from": "include/gsl", "to": "include/gsl", "include": "*" }
+    ]
+  },
+  "patches": [
+    "zw: quote GSL_SUPPRESS argument for MSVC in gsl_assert and gsl_byte",
+    "zw: add templated span count constructor to prevent MSVC narrowing warning C2398",
+    "zw: backport span front() and back() methods from GSL 3.0"
+  ]
+}
