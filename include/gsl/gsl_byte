@@ -22,7 +22,7 @@
 // Hopefully temporary until suppresion standardization occurs
 //
 #if defined(_MSC_VER)
-#define GSL_SUPPRESS(x) [[gsl::suppress(x)]]
+#define GSL_SUPPRESS(x) [[gsl::suppress("x")]]
 #else
 #if defined(__clang__)
 #define GSL_SUPPRESS(x) [[gsl::suppress("x")]]

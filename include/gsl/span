@@ -383,7 +383,10 @@ public:
     constexpr span() noexcept : storage_(nullptr, details::extent_type<0>())
     {}
 
-    constexpr span(pointer ptr, index_type count) : storage_(ptr, count) {}
+    // Local addition: templated count so brace initialization {ptr, n} accepts
+    // any integer width without narrowing (C2398) or overload ambiguity.
+    template <class CountT, class = std::enable_if_t<std::is_integral<CountT>::value>>
+    constexpr span(pointer ptr, CountT count) : storage_(ptr, static_cast<index_type>(count)) {}
 
     constexpr span(pointer firstElem, pointer lastElem)
         : storage_(firstElem, std::distance(firstElem, lastElem))
@@ -503,6 +506,21 @@ public:
     constexpr reference at(index_type idx) const { return this->operator[](idx); }
     constexpr reference operator()(index_type idx) const { return this->operator[](idx); }
     constexpr pointer data() const noexcept { return storage_.data(); }
+
+    // Local addition (ms-gsl>=3.0 API used by legacy sources)
+    GSL_SUPPRESS(bounds.1) // NO-FORMAT: attribute
+    constexpr reference front() const
+    {
+        Expects(storage_.size() > 0);
+        return data()[0];
+    }
+
+    GSL_SUPPRESS(bounds.1) // NO-FORMAT: attribute
+    constexpr reference back() const
+    {
+        Expects(storage_.size() > 0);
+        return data()[storage_.size() - 1];
+    }
 
     // [span.iter], span iterator support
     constexpr iterator begin() const noexcept { return {this, 0}; }
